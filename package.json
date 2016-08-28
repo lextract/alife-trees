@@ -1,0 +1,19 @@
+{
+  "name": "alife-trees",
+  "version": "1.0.0",
+  "description": "alife trees",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "alife",
+    "trees"
+  ],
+  "author": "alex",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "three": "^0.80.1"
+  }
+}
