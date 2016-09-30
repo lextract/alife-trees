@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Trees generator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="layout.css">
+</head>
+
+<body>
+    <script src="../node_modules/three/build/three.js"></script>
+    <script src="../node_modules/systemjs/dist/system.js"></script>
+    <script src="../node_modules/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+
+    <div id="stageArea"></div>
+    <div id="controlsArea" ng-app="app">
+        <div ng-controller="GuiController">
+            <h3>Tree Position</h3>
+			<label>X</label>
+			<input type="number" ng-model="rootXcoord" ><br>
+			<label>Y</label>
+			<input type="number" ng-model="rootYcoord" ><br>
+			<label>Z</label>
+			<input type="number" ng-model="rootZcoord" ><br>
+            <h3>Tree Settings</h3>
+            <label>N</label>
+			<input type="number" ng-model="numIterations" ><br>
+			<label>Delta</label>
+			<input type="number" ng-model="angleDelta" ><br>
+			<label>Rule</label>
+			<input type="text" ng-model="rule2D" ><br>
+			<button type="button" ng-click="generate2D()">Generate</button>
+        </div>
+    </div>
+    
+    <script> 
+        SystemJS.config({baseURL: './'});
+        SystemJS.import('TreesGenerator.js');
+    </script>
+</body>
+
+</html>

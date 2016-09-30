@@ -4,7 +4,8 @@
   "description": "alife trees",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run http-server",
+    "http-server": "http-server -e js -c-1 -p 4455"
   },
   "keywords": [
     "alife",
@@ -13,7 +14,7 @@
   "author": "alex",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.14.0",
+    "systemjs": "^0.19.39",
     "three": "^0.80.1"
   }
 }
