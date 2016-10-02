@@ -26,11 +26,15 @@
 			<input type="number" ng-model="rootZcoord" ><br>
             <h3>Tree Settings</h3>
             <label>N</label>
-			<input type="number" ng-model="numIterations" ><br>
+			<input type="number" ng-model="iterationsNum" ><br>
 			<label>Delta</label>
-			<input type="number" ng-model="angleDelta" ><br>
-			<label>Rule</label>
-			<input type="text" ng-model="rule2D" ><br>
+			<input type="number" ng-model="deltaAngle" ><br>
+            <label>Axiom</label>
+			<input type="text" ng-model="axiom" ><br>
+			<label>Rule F</label>
+			<input type="text" ng-model="ruleF" ><br>
+            <label>Rule G</label>
+			<input type="text" ng-model="ruleG" ><br>
 			<button type="button" ng-click="generate2D()">Generate</button>
         </div>
     </div>

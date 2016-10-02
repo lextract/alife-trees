@@ -1,4 +1,5 @@
 import {StageController} from './StageController';
+import { grammarFG } from './LanguageGenerator';
 
 export function GuiController(
     appModule: angular.IModule, 
@@ -8,19 +9,17 @@ export function GuiController(
         $scope.rootXcoord = 0;
         $scope.rootYcoord = 0;
         $scope.rootZcoord = 0;
-        $scope.numIterations = 0;
-        $scope.angleDelta = 0;
-        $scope.rule2D = "F+F+F+F";
+        $scope.iterationsNum = 5;
+        $scope.deltaAngle = 30;
+        $scope.axiom = "G";
+        $scope.ruleF = "FF";
+        $scope.ruleG = "F[+G][-G]FG";
         $scope.stage = stage;
 
         $scope.generate2D = function(){
-            //
-            console.log("generrrrrrrrrraddddd");
-            stage.drawRule2D($scope.rule2D);
+            let lang = grammarFG($scope.axiom,$scope.ruleF,$scope.ruleG, $scope.iterationsNum);
+            stage.interpretLanguage(lang,parseFloat($scope.deltaAngle));
         }
-
-
-
 
     });
 }

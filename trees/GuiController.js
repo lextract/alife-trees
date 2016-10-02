@@ -1,17 +1,19 @@
 "use strict";
+const LanguageGenerator_1 = require('./LanguageGenerator');
 function GuiController(appModule, stage) {
     appModule.controller('GuiController', ($scope) => {
         $scope.rootXcoord = 0;
         $scope.rootYcoord = 0;
         $scope.rootZcoord = 0;
-        $scope.numIterations = 0;
-        $scope.angleDelta = 0;
-        $scope.rule2D = "F+F+F+F";
+        $scope.iterationsNum = 5;
+        $scope.deltaAngle = 30;
+        $scope.axiom = "G";
+        $scope.ruleF = "FF";
+        $scope.ruleG = "F[+G][-G]FG";
         $scope.stage = stage;
         $scope.generate2D = function () {
-            //
-            console.log("generrrrrrrrrraddddd");
-            stage.drawRule2D($scope.rule2D);
+            let lang = LanguageGenerator_1.grammarFG($scope.axiom, $scope.ruleF, $scope.ruleG, $scope.iterationsNum);
+            stage.interpretLanguage(lang, parseFloat($scope.deltaAngle));
         };
     });
 }
