@@ -1,0 +1,22 @@
+body {
+color: #808080;
+font-family: Monospace;
+font-size: 13px;
+text-align: center;
+background-color: #000;
+margin: 0px;
+overflow: hidden;
+}
+#controlsArea{
+background-color: #999;
+position: absolute;
+overflow: hidden;
+z-index:1000;
+}
+#stageArea{
+position:absolute;
+overflow: hidden;
+}
+input[type=number]{
+    width:50px;
+}
