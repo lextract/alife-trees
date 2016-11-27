@@ -1,5 +1,3 @@
-import {Turtle} from './Turtle';
-
 export class StageController {
     sWidth: number = window.innerWidth;
     sHeight: number = window.innerHeight;
@@ -43,11 +41,5 @@ export class StageController {
         this.renderer.clear();
         this.renderer.setViewport(0, 0, this.sWidth, this.sHeight);
         this.renderer.render(this.scene, this.camera);
-    }
-    interpretLanguage(lang: string, angle: number){
-        let turtle = new Turtle();
-        turtle.setDeltaAngle(angle);
-        turtle.executeLang(lang,this.scene);
-        this.render();
     }
 }

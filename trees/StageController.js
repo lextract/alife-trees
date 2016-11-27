@@ -1,5 +1,4 @@
 "use strict";
-const Turtle_1 = require('./Turtle');
 class StageController {
     constructor(containerId) {
         this.sWidth = window.innerWidth;
@@ -38,12 +37,6 @@ class StageController {
         this.renderer.clear();
         this.renderer.setViewport(0, 0, this.sWidth, this.sHeight);
         this.renderer.render(this.scene, this.camera);
-    }
-    interpretLanguage(lang, angle) {
-        let turtle = new Turtle_1.Turtle();
-        turtle.setDeltaAngle(angle);
-        turtle.executeLang(lang, this.scene);
-        this.render();
     }
 }
 exports.StageController = StageController;

@@ -25,17 +25,25 @@
 			<label>Z</label>
 			<input type="number" ng-model="rootZcoord" ><br>
             <h3>Tree Settings</h3>
-            <label>N</label>
-			<input type="number" ng-model="iterationsNum" ><br>
 			<label>Delta</label>
 			<input type="number" ng-model="deltaAngle" ><br>
             <label>Axiom</label>
 			<input type="text" ng-model="axiom" ><br>
-			<label>Rule F</label>
-			<input type="text" ng-model="ruleF" ><br>
-            <label>Rule G</label>
-			<input type="text" ng-model="ruleG" ><br>
-			<button type="button" ng-click="generate2D()">Generate</button>
+			<label>P1</label>
+			<input type="text" ng-model="prod1" ><br>
+            <label>P2</label>
+			<input type="text" ng-model="prod2" ><br>
+            <label>P3</label>
+			<input type="text" ng-model="prod3" ><br>
+            <label>P4</label>
+			<input type="text" ng-model="prod4" ><br>
+            <label>P5</label>
+			<input type="text" ng-model="prod5" ><br>
+            <label>Max Iterations</label>
+			<input type="number" ng-model="maxIterations" ><br>
+			<!--<button type="button" ng-click="generate2D()">Generate</button>-->
+            <button type="button" ng-click="createTree()">Create Tree</button>
+            <button type="button" ng-click="landCycle()">Iteration</button>
         </div>
     </div>
     

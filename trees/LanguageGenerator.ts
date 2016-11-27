@@ -1,37 +1,36 @@
-
-export function grammarF(
+/**
+ * Devuelve una función que genera lenguajes basados en
+ * las reglas gramaticales del parametro rule
+ */
+export function grammar(
     axiom: string,
-    ruleF: string, 
-    iterations: number
-): string {
-    let prevProduction = axiom;
-    for (let i = 0; i < iterations; i++) {
-        let nextProduction = "";
-        for (let j = 0; j < prevProduction.length; j++) {
-            if (prevProduction[j] == "F") nextProduction += ruleF;
-            else nextProduction += prevProduction[j];
+    rules: Map<string, string>
+): (number) => string {
+    let langGenerator = (iterations: number): string => {
+        let prevProduction = axiom;
+        for (let i = 0; i < iterations; i++) {
+            let nextProduction = "";
+            for (let j = 0; j < prevProduction.length; j++) {
+                let rule = rules.get(prevProduction[j]);
+                if (rule) nextProduction += rule;
+                else nextProduction += prevProduction[j];
+            }
+            prevProduction = nextProduction;
         }
-        prevProduction = nextProduction;
+        return prevProduction;
     }
-    return prevProduction;
+    return langGenerator;
 }
-
-export function grammarFG(
-    axiom: string,
-    ruleF: string, 
-    ruleG: string, 
-    iterations: number
-): string {
-    let prevProduction = axiom;
-    for (let i = 0; i < iterations; i++) {
-        let nextProduction = "";
-        for (let j = 0; j < prevProduction.length; j++) {
-            if (prevProduction[j] == "F") nextProduction += ruleF;
-            else if (prevProduction[j] == "G") nextProduction += ruleG;
-            else nextProduction += prevProduction[j];
+/**
+ * Genera un objeto clave-valor busando dentro de
+ * la cadena el caracter separador "→" ó ":"
+ */
+export function extractRule(str: string) {
+    let idx = str.indexOf("→");
+    if (idx < 0) idx = str.indexOf(":");
+    if (idx >= 0)
+        return {
+            key: str.substr(0, idx).trim(),
+            value: str.substring(idx + 1).trim()
         }
-        prevProduction = nextProduction;
-    }
-    return prevProduction;
 }
-

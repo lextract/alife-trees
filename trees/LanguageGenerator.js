@@ -1,33 +1,39 @@
 "use strict";
-function grammarF(axiom, ruleF, iterations) {
-    let prevProduction = axiom;
-    for (let i = 0; i < iterations; i++) {
-        let nextProduction = "";
-        for (let j = 0; j < prevProduction.length; j++) {
-            if (prevProduction[j] == "F")
-                nextProduction += ruleF;
-            else
-                nextProduction += prevProduction[j];
+/**
+ * Devuelve una función que genera lenguajes basados en
+ * las reglas gramaticales del parametro rule
+ */
+function grammar(axiom, rules) {
+    let langGenerator = (iterations) => {
+        let prevProduction = axiom;
+        for (let i = 0; i < iterations; i++) {
+            let nextProduction = "";
+            for (let j = 0; j < prevProduction.length; j++) {
+                let rule = rules.get(prevProduction[j]);
+                if (rule)
+                    nextProduction += rule;
+                else
+                    nextProduction += prevProduction[j];
+            }
+            prevProduction = nextProduction;
         }
-        prevProduction = nextProduction;
-    }
-    return prevProduction;
+        return prevProduction;
+    };
+    return langGenerator;
 }
-exports.grammarF = grammarF;
-function grammarFG(axiom, ruleF, ruleG, iterations) {
-    let prevProduction = axiom;
-    for (let i = 0; i < iterations; i++) {
-        let nextProduction = "";
-        for (let j = 0; j < prevProduction.length; j++) {
-            if (prevProduction[j] == "F")
-                nextProduction += ruleF;
-            else if (prevProduction[j] == "G")
-                nextProduction += ruleG;
-            else
-                nextProduction += prevProduction[j];
-        }
-        prevProduction = nextProduction;
-    }
-    return prevProduction;
+exports.grammar = grammar;
+/**
+ * Genera un objeto clave-valor busando dentro de
+ * la cadena el caracter separador "→" ó ":"
+ */
+function extractRule(str) {
+    let idx = str.indexOf("→");
+    if (idx < 0)
+        idx = str.indexOf(":");
+    if (idx >= 0)
+        return {
+            key: str.substr(0, idx).trim(),
+            value: str.substring(idx + 1).trim()
+        };
 }
-exports.grammarFG = grammarFG;
+exports.extractRule = extractRule;
