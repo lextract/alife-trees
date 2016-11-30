@@ -1,4 +1,5 @@
 let STEP_SIZE = 10;
+let geometry = new THREE.CylinderBufferGeometry(1, 1, STEP_SIZE, 10);
 const lexems: Map<string, (turtle: TurtleInterpreter) => any> = new Map();
 
 export class TurtleInterpreter {
@@ -43,7 +44,6 @@ export class TurtleInterpreter {
         let figurePosition = this.startPosition.clone();
         figurePosition.add(this.head.clone().multiplyScalar(STEP_SIZE / 2));
 
-        let geometry = new THREE.CylinderGeometry(1, 1, STEP_SIZE, 10);
         let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
         let cylinder = new THREE.Mesh(geometry, material);
 
@@ -70,7 +70,7 @@ export class TurtleInterpreter {
 }
 
 lexems.set("f", (turtle: TurtleInterpreter) => {
-    turtle.startPosition.add(this.head.clone().multiplyScalar(STEP_SIZE));
+    turtle.startPosition.add(turtle.head.clone().multiplyScalar(STEP_SIZE));
 });
 lexems.set("[", (turtle: TurtleInterpreter) => {
     turtle.pushState();
@@ -120,8 +120,23 @@ lexems.set("!", () => {
     //the diameter of segments and increment the current index to the color
     //table, respectively.
 });
+lexems.set("’", () => {
+    // TODO: The symbols ! and ’ are used to decrement
+    //the diameter of segments and increment the current index to the color
+    //table, respectively.
+});
 
-lexems.set("'", () => {
+/*
+Its boundary is formed
+from the edges f enclosed between the braces { and } (see Chapter 5
+for further discussion)
+*/
+lexems.set("{", () => {
+    // TODO: The symbols ! and ' are used to decrement
+    //the diameter of segments and increment the current index to the color
+    //table, respectively.
+});
+lexems.set("}", () => {
     // TODO: The symbols ! and ' are used to decrement
     //the diameter of segments and increment the current index to the color
     //table, respectively.

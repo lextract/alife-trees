@@ -1,5 +1,6 @@
 "use strict";
 let STEP_SIZE = 10;
+let geometry = new THREE.CylinderBufferGeometry(1, 1, STEP_SIZE, 10);
 const lexems = new Map();
 class TurtleInterpreter {
     constructor(startPosition) {
@@ -40,7 +41,6 @@ class TurtleInterpreter {
     advance() {
         let figurePosition = this.startPosition.clone();
         figurePosition.add(this.head.clone().multiplyScalar(STEP_SIZE / 2));
-        let geometry = new THREE.CylinderGeometry(1, 1, STEP_SIZE, 10);
         let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
         let cylinder = new THREE.Mesh(geometry, material);
         cylinder.position.set(figurePosition.x, figurePosition.y, figurePosition.z);
@@ -66,7 +66,7 @@ class TurtleInterpreter {
 }
 exports.TurtleInterpreter = TurtleInterpreter;
 lexems.set("f", (turtle) => {
-    turtle.startPosition.add(this.head.clone().multiplyScalar(STEP_SIZE));
+    turtle.startPosition.add(turtle.head.clone().multiplyScalar(STEP_SIZE));
 });
 lexems.set("[", (turtle) => {
     turtle.pushState();
@@ -115,7 +115,22 @@ lexems.set("!", () => {
     //the diameter of segments and increment the current index to the color
     //table, respectively.
 });
-lexems.set("'", () => {
+lexems.set("’", () => {
+    // TODO: The symbols ! and ’ are used to decrement
+    //the diameter of segments and increment the current index to the color
+    //table, respectively.
+});
+/*
+Its boundary is formed
+from the edges f enclosed between the braces { and } (see Chapter 5
+for further discussion)
+*/
+lexems.set("{", () => {
+    // TODO: The symbols ! and ' are used to decrement
+    //the diameter of segments and increment the current index to the color
+    //table, respectively.
+});
+lexems.set("}", () => {
     // TODO: The symbols ! and ' are used to decrement
     //the diameter of segments and increment the current index to the color
     //table, respectively.

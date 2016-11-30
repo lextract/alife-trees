@@ -1,26 +1,45 @@
 "use strict";
+const Tree_1 = require('../Trees/Tree');
+const LanguageGenerator = require('../Trees/LanguageGenerator');
+const trees = [];
+let cyclesCounter = 0;
+let ruleIndex = 0;
+let cyclicIndex = 0;
 class PlantsManager {
     generateGrass(scene) {
     }
-    generateTree() {
+    static initializeTrees(scene) {
+        createTreeA(6);
+        createTreeA(5);
+        createTreeA(3);
+        createTreeA(3);
+        createTreeA(3);
+        createTreeA(5);
+        createTreeA(3);
+        for (let i = 0; i < trees.length; i++) {
+            trees[i].landCycle(scene);
+        }
+        cyclicIndex++;
+    }
+    static landCycle(scene) {
+        if (cyclesCounter % 32 == 0) {
+            trees[cyclicIndex].landCycle(scene);
+            cyclicIndex++;
+            cyclicIndex = cyclicIndex % trees.length;
+        }
+        cyclesCounter++;
     }
 }
 PlantsManager.grassRule = "";
 exports.PlantsManager = PlantsManager;
-class ResourceManager {
-    addResources(alpha, x, y, growthRate, pollutionGrowthRate) {
-        // let x1 = x - alphaFactors.length + 1;
-        // let x2 = x + alphaFactors.length - 1;
-        // let y1 = y - alphaFactors.length + 1;
-        // let y2 = y + alphaFactors.length - 1;
-        // for (let i = x1; i <= x2; i++) {
-        //     let dx = Math.abs(x - i);
-        //     for (let j = y1; j <= y2; j++) {
-        //         let dy = Math.abs(y - j);
-        //         let energy = dx > dy ? alphaFactors[dx] * alpha : alphaFactors[dy] * alpha;
-        //         let plot = this.getPlot(i, j);
-        //         plot.setResources(energy, growthRate, pollutionGrowthRate);
-        //     }
-        // }
-    }
+function createTreeA(maxIterations) {
+    let axiom = "A";
+    let rules = new Map();
+    rules.set("A", "[&FL!A]/////’[&FL!A]///////’[&FL!A]");
+    rules.set("F", "S ///// F");
+    rules.set("S", "FL");
+    rules.set("L", "[’’’∧∧{-f+f+f-|-f+f+f}]");
+    trees.push(new Tree_1.Tree(new THREE.Vector3(Math.random() * 1000 - 500, 0, Math.random() * 1000 - 500), LanguageGenerator.grammar(axiom, rules), 23, maxIterations));
+}
+function createTreeB() {
 }

@@ -1,9 +1,10 @@
 "use strict";
 const sidePatch = 10;
 const maxLevelResources = 100;
-const patches = [];
 const resourceColors = [];
 let geometry = new THREE.PlaneGeometry(sidePatch, sidePatch);
+//const patches: Patch[] = [];
+const patches = new Map();
 class Patch {
     constructor(x, y, z) {
         this.energy = 50;
@@ -19,6 +20,9 @@ class Patch {
     get figure() {
         return this.figure_;
     }
+    get position() {
+        return this.figure_.position;
+    }
     setResources(value, growthRate) {
         this.energy = Math.round(value);
         this.updateColorState();
@@ -29,6 +33,15 @@ class Patch {
         if (this.energy < maxLevelResources)
             this.energy += this.energyGrowthRate;
         this.updateColorState();
+    }
+    releaseResources(nibbleSize) {
+        if (this.energy > nibbleSize) {
+            this.energy -= nibbleSize;
+            return nibbleSize;
+        }
+        else {
+            return this.energy;
+        }
     }
     updateColorState() {
         let idx = (resourceColors.length - 1) * this.energy / maxLevelResources;
@@ -41,6 +54,10 @@ exports.Patch = Patch;
 class PatchManager {
     static get patches() {
         return patches;
+    }
+    static initializeResourceZones(scene) {
+        PatchManager.createResourceZone(new THREE.Vector3(300, 0, -300), 200, 50, 2, scene);
+        PatchManager.createResourceZone(new THREE.Vector3(-300, 0, 300), 200, 5, 2, scene);
     }
     static createResourceZone(point, radius, alphaResource, growthRate, scene) {
         point.setY(0);
@@ -59,18 +76,59 @@ class PatchManager {
                 let newPatch = new Patch(xi, 0, zi);
                 // TODO: modificar para crear tasa de crecimiento variable, respecto a la distancia del centro
                 newPatch.setResources(alphaResource, growthRate);
-                patches.push(newPatch);
+                patches.set(PatchManager.patchCoordKey(newPatch.position), newPatch);
                 scene.add(newPatch.figure);
             }
         }
     }
     static landCycle() {
-        for (let i = 0; i < patches.length; i++) {
-            patches[i].landCycle();
+        for (let patch of patches.values()) {
+            patch.landCycle();
         }
     }
-    static getZone(point, radius) {
-        patches.filter(patch => patch.figure.position.distanceTo(point) < radius);
+    static patchesInPerimeter(point, radius) {
+        let result = [];
+        let centerPatch = PatchManager.normalizeCoords(point);
+        let distance = radius * sidePatch;
+        let left = centerPatch.clone().setX(centerPatch.x - distance);
+        let right = centerPatch.clone().setX(centerPatch.x + distance);
+        let front = centerPatch.clone().setZ(centerPatch.z - distance);
+        let back = centerPatch.clone().setZ(centerPatch.z + distance);
+        let pl = patches.get(PatchManager.patchCoordKey(left));
+        if (pl)
+            result.push(pl);
+        let pr = patches.get(PatchManager.patchCoordKey(right));
+        if (pr)
+            result.push(pr);
+        let pf = patches.get(PatchManager.patchCoordKey(front));
+        if (pf)
+            result.push(pf);
+        let pb = patches.get(PatchManager.patchCoordKey(back));
+        if (pb)
+            result.push(pb);
+        return result;
+    }
+    static normalizeCoords(point) {
+        var result = new THREE.Vector3(Math.round(point.x), 0, Math.round(point.x));
+        // only right if sidePatch === 10
+        let mod = result.x % 10;
+        result.x = result.x - mod;
+        if (mod > 2)
+            result.x = mod > 7 ? result.x + 10 : result.x + 5;
+        mod = Math.round(result.z) % 10;
+        result.z = result.z - mod;
+        if (mod > 2)
+            result.z = mod > 7 ? result.z + 10 : result.z + 5;
+        return result;
+    }
+    // static getPatchZone(point: THREE.Vector3, radius: number) {
+    //     listadosss.filter(patch => patch.figure.position.distanceTo(point) < radius);
+    // }
+    static getPatchCoord(point) {
+        return patches.get(PatchManager.patchCoordKey(PatchManager.normalizeCoords(point)));
+    }
+    static patchCoordKey(point) {
+        return `x${point.x}y${point.y}z${point.z}`;
     }
 }
 exports.PatchManager = PatchManager;

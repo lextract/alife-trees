@@ -1,26 +1,16 @@
- import {StageManager} from './StageManager';
-// import { grammarFG } from './LanguageGenerator';
+import { StageManager } from './StageManager';
+import { PatchManager } from './Patch';
+import { ZebrasManager, TigersManager } from './MigrantsManager';
+import { PlantsManager } from './PlantsManager';
 
+let stageManager: StageManager;
 export function GuiController(
-    appModule: angular.IModule, 
+    appModule: angular.IModule,
     stage: StageManager
 ) {
+    stageManager = stage;
     appModule.controller('GuiController', ($scope) => {
         $scope.simulating = false;
-        $scope.rootXcoord = 0;
-        $scope.rootYcoord = 0;
-        $scope.rootZcoord = 0;
-        $scope.iterationsNum = 5;
-        $scope.deltaAngle = 30;
-        $scope.axiom = "G";
-        $scope.ruleF = "FF";
-        $scope.ruleG = "F[+G][-G]FG";
-        $scope.stage = stage;
-
-        $scope.generate2D = function(){
-            //let lang = grammarFG($scope.axiom,$scope.ruleF,$scope.ruleG, $scope.iterationsNum);
-            //stage.interpretLanguage(lang,parseFloat($scope.deltaAngle));
-        }
         $scope.simulate = function () {
             stage.simulate();
             $scope.simulating = true;
@@ -30,6 +20,21 @@ export function GuiController(
             stage.stopSimulation();
             $scope.simulating = false;
         }
+        $scope.reset = function () {
+            resetStage();
+        }
 
     });
+}
+
+function resetStage() {
+    for (let i = stageManager.scene.children.length - 1; i >= 0; i--) {
+        stageManager.scene.remove(stageManager.scene.children[i]);
+    }
+    ZebrasManager.generatePopulation(30, stageManager.scene);
+    TigersManager.generatePopulation(5, stageManager.scene);
+    PatchManager.initializeResourceZones(stageManager.scene);
+    PlantsManager.initializeTrees(stageManager.scene);
+    stageManager.scene.add(new THREE.GridHelper(500, 10));
+    stageManager.render();
 }

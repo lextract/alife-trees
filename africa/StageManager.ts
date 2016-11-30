@@ -1,6 +1,6 @@
-import { TurtleGenerator } from './TurtleGenerator';
-import { ZebrasManager } from './MigrantsManager';
+import { ZebrasManager, TigersManager } from './MigrantsManager';
 import { PatchManager } from './Patch';
+import { PlantsManager } from './PlantsManager';
 
 export class StageManager {
     simulating = false;
@@ -15,11 +15,13 @@ export class StageManager {
     constructor(containerId: string) {
         this.container = <HTMLDivElement>document.getElementById(containerId);
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(50, this.aspect, 100, 5000);
+        this.camera = new THREE.PerspectiveCamera(50, this.aspect, 50, 5000);
+        //let frustumSize = 600;
+// this.camera = new THREE.OrthographicCamera( 0.5 * frustumSize * this.aspect / - 2, 0.5 * frustumSize * this.aspect / 2, 
+// frustumSize / 2, frustumSize / - 2, 150, 1000 );
         this.camera.position.y = 1000;
         this.camera.position.z = -2000;
 
-        this.scene.add(new THREE.GridHelper(500, 10, 0xff0000));
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(this.sWidth, this.sHeight);
@@ -32,14 +34,15 @@ export class StageManager {
         controls.enableDamping = true;
         controls.dampingFactor = 0.25;
         controls.enableZoom = true;
-        this.render();
     }
     onWindowResize(event) {
         this.sWidth = window.innerWidth;
         this.sHeight = window.innerHeight;
         this.aspect = this.sWidth / this.sHeight;
         this.renderer.setSize(this.sWidth, this.sHeight);
-        this.camera.aspect = this.aspect;
+        //this.camera.aspect = 0.5 * this.aspect;
+        // cameraOrtho.left   = - 0.5 * frustumSize * aspect / 2;
+		// 		cameraOrtho.right  =   0.5 * frustumSize * aspect / 2;
         this.camera.updateProjectionMatrix();
         this.render();
     }
@@ -47,12 +50,6 @@ export class StageManager {
         this.renderer.clear();
         this.renderer.setViewport(0, 0, this.sWidth, this.sHeight);
         this.renderer.render(this.scene, this.camera);
-    }
-    interpretLanguage(lang: string, angle: number) {
-        let turtle = new TurtleGenerator();
-        turtle.setDeltaAngle(angle);
-        turtle.executeLang(lang, this.scene);
-        this.render();
     }
     simulate() {
         this.simulating = true;
@@ -73,8 +70,10 @@ export class StageManager {
         this.simulating = false;
     }
     renderStep(){
-        ZebrasManager.computeNewPositions();
         PatchManager.landCycle();
+        ZebrasManager.computeNewPositions();
+        TigersManager.computeNewPositions();
+        PlantsManager.landCycle(this.scene);
         this.render();
     }
 }

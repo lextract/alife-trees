@@ -14,28 +14,8 @@ class ZebrasManager {
         let m1 = 1, m2 = 1, m3 = 1;
         for (let i = 0; i < ZebrasManager.flock.length; i++) {
             let zebra = ZebrasManager.flock[i];
-            let cv = zebra.cohesionVector().multiplyScalar(m1);
-            let sv = zebra.separationVector().multiplyScalar(m2);
-            let vv = zebra.algimentVector().multiplyScalar(m3);
-            let bp = ZebrasManager.boundPosition(zebra);
-            let pc = ZebrasManager.predatorsCenter(zebra);
-            zebra.velocity.add(cv).add(sv).add(vv).add(bp).add(pc).normalize();
-            zebra.position.add(zebra.velocity.multiplyScalar(ZebrasManager.maxVelocity));
+            zebra.computeNewPosition();
         }
-    }
-    static boundPosition(migrant) {
-        let xMin = -500, xMax = 500, zMin = -500, zMax = 500;
-        let reduction = 10;
-        var v = new THREE.Vector3();
-        if (migrant.position.x < xMin)
-            v.setX(reduction);
-        else if (migrant.position.x > xMax)
-            v.setX(-reduction);
-        if (migrant.position.z < zMin)
-            v.setZ(reduction);
-        else if (migrant.position.z > zMax)
-            v.setZ(-reduction);
-        return v;
     }
     static predatorsCenter(zebra) {
         var v = new THREE.Vector3();
@@ -57,7 +37,7 @@ class ZebrasManager {
 }
 ZebrasManager.watchRadius = 100;
 ZebrasManager.neighborRadius = 200;
-ZebrasManager.maxVelocity = 5;
+ZebrasManager.maxVelocity = 10;
 ZebrasManager.flock = [];
 exports.ZebrasManager = ZebrasManager;
 class TigersManager {
@@ -70,41 +50,44 @@ class TigersManager {
         }
     }
     static computeNewPositions() {
-        let m1 = 1, m2 = 1, m3 = 1;
-        // for (let zebra of flock) {
-        //     let cv = cohesionVector(zebra).multiplyScalar(m1);
-        //     let sv = separationVector(zebra).multiplyScalar(m2);
-        //     let vv = velocityVector(zebra).multiplyScalar(m3);
-        //     let bp = boundPosition(zebra);
-        //     //zebra.velocity.add(cv).add(sv).add(vv).normalize();
-        //     zebra.velocity.add(cv).add(sv).add(vv).add(bp);
-        //     limitVelocity(zebra);
-        //     zebra.position.add(zebra.velocity);
-        // }
+        for (let i = 0; i < TigersManager.population.length; i++) {
+            TigersManager.population[i].computeNewPosition();
+        }
     }
 }
 TigersManager.population = [];
+TigersManager.maxVelocity = 11;
+TigersManager.watchRadius = 250;
 exports.TigersManager = TigersManager;
 class MigrantsManager {
-    static addCubes(scene) {
-        for (let i = 0; i < 100; i++) {
-            var geometry = new THREE.BoxGeometry(10, 10, 10);
-            var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-            var cube = new THREE.Mesh(geometry, material);
-            cube.position.setX(500 * Math.random());
-            cube.position.setZ(500 * Math.random());
-            scene.add(cube);
-        }
-    }
+    // static get landResources(): Patch[]{
+    //     return PatchManager.patches;
+    // }
     static createZebras(quantity) {
     }
     static createTigers(quantity) {
+    }
+    static boundPosition(position) {
+        let xMin = -500, xMax = 500, zMin = -500, zMax = 500;
+        let reduction = 10;
+        var v = new THREE.Vector3();
+        if (position.x < xMin)
+            v.setX(reduction);
+        else if (position.x > xMax)
+            v.setX(-reduction);
+        if (position.z < zMin)
+            v.setZ(reduction);
+        else if (position.z > zMax)
+            v.setZ(-reduction);
+        return v.normalize();
+    }
+    static randomVector() {
+        let v = new THREE.Vector3(2 * Math.random() - 1, 0, 2 * Math.random() - 1);
+        return v.normalize();
     }
 }
 exports.MigrantsManager = MigrantsManager;
 function getFreePosition() {
     let p = new THREE.Vector3(500 * Math.random(), 0, 500 * Math.random());
     return p;
-}
-class ResourcePoint {
 }

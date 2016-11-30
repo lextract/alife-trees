@@ -1,21 +1,12 @@
 "use strict";
-// import { grammarFG } from './LanguageGenerator';
+const Patch_1 = require('./Patch');
+const MigrantsManager_1 = require('./MigrantsManager');
+const PlantsManager_1 = require('./PlantsManager');
+let stageManager;
 function GuiController(appModule, stage) {
+    stageManager = stage;
     appModule.controller('GuiController', ($scope) => {
         $scope.simulating = false;
-        $scope.rootXcoord = 0;
-        $scope.rootYcoord = 0;
-        $scope.rootZcoord = 0;
-        $scope.iterationsNum = 5;
-        $scope.deltaAngle = 30;
-        $scope.axiom = "G";
-        $scope.ruleF = "FF";
-        $scope.ruleG = "F[+G][-G]FG";
-        $scope.stage = stage;
-        $scope.generate2D = function () {
-            //let lang = grammarFG($scope.axiom,$scope.ruleF,$scope.ruleG, $scope.iterationsNum);
-            //stage.interpretLanguage(lang,parseFloat($scope.deltaAngle));
-        };
         $scope.simulate = function () {
             stage.simulate();
             $scope.simulating = true;
@@ -24,6 +15,20 @@ function GuiController(appModule, stage) {
             stage.stopSimulation();
             $scope.simulating = false;
         };
+        $scope.reset = function () {
+            resetStage();
+        };
     });
 }
 exports.GuiController = GuiController;
+function resetStage() {
+    for (let i = stageManager.scene.children.length - 1; i >= 0; i--) {
+        stageManager.scene.remove(stageManager.scene.children[i]);
+    }
+    MigrantsManager_1.ZebrasManager.generatePopulation(30, stageManager.scene);
+    MigrantsManager_1.TigersManager.generatePopulation(5, stageManager.scene);
+    Patch_1.PatchManager.initializeResourceZones(stageManager.scene);
+    PlantsManager_1.PlantsManager.initializeTrees(stageManager.scene);
+    stageManager.scene.add(new THREE.GridHelper(500, 10));
+    stageManager.render();
+}
